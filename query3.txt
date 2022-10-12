@@ -1,0 +1,11 @@
+select d.name ,count(d.tin_number) from vendor d, installed_by i where i.tin_number=d.tin_number and i.ins_type='domestic' group by d.tin_number having count(d.tin_number)>= all (select count(d.tin_number) from vendor v , installed_by i where i.tin_number= d.tin_number and i.ins_type='domestic' group by d.tin_number);
+
+select u.address from user u,panel p,installed_by i where u.house_no=i.house_no and p.pv_module=i.pv_module and p.capacity=(select max(capacity) from panel);
+
+select distinct  u.address,u.house_no from user u,panel p,installed_by i where u.house_no=i.house_no and p.pv_module=i.pv_module and p.type ='monocrystalline';
+
+select u.address,sum(i.charge) from user u,installed_by i where u.house_no=i.house_no group by (u.address);
+
+select d.* ,p.* ,i.date from vendor d,panel p,installed_by i where d.tin_number=i.tin_number and p.pv_module=i.pv_module and i.date in (select min(date) from installed_by);
+
+select count(s.pv_module) as 'total sales',count(s.pv_module)/(select count(*)from sold_by) as 'avg sales',p.type from user u,sold_by s,panel p,installed_by i where i.pv_module=p.pv_module and i.house_no=u.house_no and s.pv_module=p.pv_module and i.ins_type='commercial' group by p.type;
